@@ -1,17 +1,31 @@
 package com.dev;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        final String command = args[0];
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        if(command == "init"){
+            final File root = new File(".git");
+            new File(root, "hooks").mkdirs();
+            new File(root, "objects").mkdirs();
+            new File(root, "refs").mkdirs();
+            final File head = new File(root, "HEAD");
+
+            try {
+                head.createNewFile();
+                Files.write(head.toPath(), "ref: refs/heads/master\n".getBytes());
+                System.out.printf("Dépôt Git vide initialisé dans ¨%s.git/", root.getCanonicalPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        else {
+            System.out.println("Unknown command: " + command);
         }
     }
 }
