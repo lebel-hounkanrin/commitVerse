@@ -1,16 +1,20 @@
 package com.dev;
 
 
-import com.dev.utils.Util;
+import com.dev.utils.Crypto;
+import com.dev.utils.Zlib;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.zip.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         final String command = args[0];
 
         if(Objects.equals(command, "init")){
@@ -29,8 +33,20 @@ public class Main {
             }
         }
         else if(Objects.equals(command, "cat-file")){
-            String filename = args[1];
-            String sha1sum = Util.computeFileSHA1(filename);
+            String option = args[1].trim();
+            if (option.equals("-p")) {
+                String filename = args[2];
+                String path = String.format(".git/objects/%s/%s", filename.substring(0, 2), filename.substring(2));
+                File file = new File(path);
+                try {
+                    String content = new BufferedReader(new InputStreamReader(new FileInputStream(file))).readLine();
+                    System.out.print(Arrays.toString(Zlib.decompress(content.getBytes())));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+
         }
         else {
             System.out.println("Unknown command: " + command);

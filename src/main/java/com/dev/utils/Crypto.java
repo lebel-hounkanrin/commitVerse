@@ -1,12 +1,14 @@
 package com.dev.utils;
 
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
-public class Util {
+public class Crypto {
     public static String computeFileSHA1(String filePath) throws IOException {
         try(
                 InputStream fis = new FileInputStream(filePath);
@@ -20,7 +22,15 @@ public class Util {
         catch (Exception e) {
             throw new IOException("Failed to compute SHA-1 hash", e);
         }
+    }
 
+    public static String computeStringSHA1(String args) throws NoSuchAlgorithmException, IOException {
+        MessageDigest sha1 = MessageDigest.getInstance("SHA-1");
+        try (DigestInputStream digestInputStream = new DigestInputStream(new ByteArrayInputStream(args.getBytes()), sha1)) {
+            byte[] buffer = new byte[1024];
+            while (digestInputStream.read(buffer) != -1) {}
+        }
+        return bytesToHex(sha1.digest());
     }
 
     public static String bytesToHex(byte[] bytes) {
