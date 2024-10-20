@@ -39,8 +39,9 @@ public class Main {
                 String path = String.format(".git/objects/%s/%s", filename.substring(0, 2), filename.substring(2));
                 File file = new File(path);
                 try {
-                    String content = new BufferedReader(new InputStreamReader(new FileInputStream(file))).readLine();
-                    System.out.print(Arrays.toString(Zlib.decompress(content.getBytes())));
+                    String _content = new BufferedReader(new InputStreamReader(new InflaterInputStream(new FileInputStream(file)))).readLine();
+                    String content = _content.substring(_content.indexOf("\0")+1);
+                    System.out.println(content);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
