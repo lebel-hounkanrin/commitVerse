@@ -4,6 +4,7 @@ import com.dev.utils.Crypto;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +60,15 @@ public class Main {
 
                     stringToHash.append("blob ").append(fileSize).append("\0").append(allLines);
 
-                    System.out.println(Crypto.computeStringSHA1(stringToHash.toString()));
+                    String hashName = Crypto.computeStringSHA1(stringToHash.toString());
+                    new File("objects", hashName.substring(0, 2)).mkdirs();
+                    File content = new File(String.valueOf(Path.of("objects", hashName.substring(0, 2))), hashName.substring(2));
+                    try {
+                        content.createNewFile();
+                        Files.write(content.toPath(), Files.readAllLines(file.toPath()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
 
                 } catch (Exception e) {
                     throw new RuntimeException(e);
