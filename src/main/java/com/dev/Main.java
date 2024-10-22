@@ -1,8 +1,12 @@
 package com.dev;
 
+import com.dev.utils.Crypto;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.zip.*;
 
@@ -41,8 +45,27 @@ public class Main {
 
             }
 
-        }
-        else {
+        } else if (Objects.equals(command, "hash-object")) {
+            String option = args[1];
+            if (option.equals("-w")) {
+                String filename = args[2];
+                try {
+                    File file = new File(filename);
+                    long fileSize = file.length();
+                    List<String> lines = Files.readAllLines(file.toPath());
+                    String allLines = String.join("\n", lines);
+
+                    StringBuilder stringToHash = new StringBuilder();
+
+                    stringToHash.append("blob ").append(fileSize).append("\0").append(allLines);
+
+                    System.out.println(Crypto.computeStringSHA1(stringToHash.toString()));
+
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
             System.out.println("Unknown command: " + command);
         }
     }
