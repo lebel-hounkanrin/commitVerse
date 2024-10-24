@@ -74,7 +74,10 @@ public class Main {
                     throw new RuntimeException(e);
                 }
             }
-        } else {
+        } else if (Objects.equals(command, "ls-tree")) {
+            String treeId = args[1];
+        }
+        else {
             System.out.println("Unknown command: " + command);
         }
     }
