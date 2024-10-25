@@ -6,10 +6,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.*;
 import java.util.zip.*;
 
 public class Main {
@@ -79,11 +76,16 @@ public class Main {
             String hash = args[1];
             String path = String.format(".git/objects/%s/%s", hash.substring(0, 2), hash.substring(2));
             File file = new File(path);
+            ArrayList<String> treeContent = new ArrayList<>();
             try {
                 String _content = new BufferedReader(new InputStreamReader(new InflaterInputStream(new FileInputStream(file)))).readLine();
                 String content = _content.substring(_content.indexOf("\0")+1);
-                String[] s = content.split("\0");
-                List.of(s).forEach(System.out::println);
+                String[] splitByMode = content.split("100644|040000|100755|120000|40000");;
+                List.of(splitByMode).forEach(splittedString -> {
+                    treeContent.add(splittedString.split("\0")[0]);
+                });
+                Collections.sort(treeContent);
+                System.out.println(treeContent);
 //                Arrays.stream(s).toList().forEach(System.out::println);
             } catch (IOException e) {
                 throw new RuntimeException(e);
