@@ -86,7 +86,6 @@ public class Main {
                 });
                 Collections.sort(treeContent);
                 System.out.println(treeContent);
-//                Arrays.stream(s).toList().forEach(System.out::println);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
